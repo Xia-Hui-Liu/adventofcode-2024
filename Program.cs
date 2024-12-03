@@ -28,7 +28,7 @@ async Task SolutionDay(int day)
             break;
         case 3:
             await MullItOver01.Solution();
-            // await RedNosedReports02.Solution();
+            await MullItOver02.Solution();
             break;
         // Add more cases for each day
         default:
