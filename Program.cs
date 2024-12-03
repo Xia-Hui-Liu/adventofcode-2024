@@ -22,9 +22,9 @@ async Task SolutionDay(int day)
             await HistorianHysteria01.Solution();
             await HistorianHysteria02.Solution();
             break;
-        // case 2:
-        //     await HistorianHysteria02.Solution();
-        //     break;
+        case 2:
+            await RedNosedReports01.Solution();
+            break;
         // Add more cases for each day
         default:
             Console.WriteLine($"Solution for Day {day} is not implemented yet.");
