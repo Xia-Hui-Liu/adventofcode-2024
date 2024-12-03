@@ -1,4 +1,4 @@
-public static class HistorianHysteria01
+public static class HistorianHysteria02
 {
     public static async Task Solution()
     {
@@ -10,7 +10,7 @@ public static class HistorianHysteria01
             return;
         }
 
-        var (leftArray, rightArray) = Day01InputProcessor.ProcessInputSort(rawInput);
+        var (leftArray, rightArray) = Day01InputProcessor.ProcessInput(rawInput);
 
         if (leftArray.Count == 0 || rightArray.Count == 0 || leftArray.Count != rightArray.Count)
         {
@@ -18,10 +18,10 @@ public static class HistorianHysteria01
             return;
         }
 
-        Console.WriteLine("Processing Day 1 logic...");
+        Console.WriteLine("Processing Day 1 part 2 logic...");
 
-        int sum = Day01InputProcessor.SumDifference(leftArray, rightArray);
+        int similarityScore = Day01InputProcessor.CalculateSimilarityScore(leftArray, rightArray);
         
-        Console.WriteLine($"Sum of positive differences: {sum}");
+        Console.WriteLine($"Similarity Score: {similarityScore}");
     }
 }

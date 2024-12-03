@@ -1,20 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
-
 public static class FetchInput
 {
     private static readonly string _sessionCookie = Environment.GetEnvironmentVariable("AOC_SESSION") ?? string.Empty;
     public static string SessionCookie => _sessionCookie;
 
-    public static async Task<(List<string> LeftArray, List<string> RightArray)> FetchAndProcessInput(int day)
+    public static async Task<string> FetchRawInput(int day)
     {
         if (string.IsNullOrEmpty(SessionCookie))
         {
-            Console.Error.WriteLine("Session cookie is not set in the environment variables.");
-            Environment.Exit(1);
+            throw new InvalidOperationException("Session cookie is not set in the environment variables.");
         }
 
         string url = $"https://adventofcode.com/2024/day/{day}/input";
@@ -27,49 +20,12 @@ public static class FetchInput
         {
             using HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
-
-            using Stream responseStream = await response.Content.ReadAsStreamAsync();
-            var (leftArray, rightArray) = await ProcessInputStream(responseStream);
-            return (leftArray, rightArray);
+            return await response.Content.ReadAsStringAsync();
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Error fetching input: {ex.Message}");
-            return (new List<string>(), new List<string>());
+            return string.Empty;
         }
-    }
-
-    public static async Task<(List<string> LeftArray, List<string> RightArray)> ProcessInputStream(Stream inputStream)
-    {
-        using StreamReader reader = new StreamReader(inputStream);
-
-        var leftArray = new List<string>();
-        var rightArray = new List<string>();
-
-        while (!reader.EndOfStream)
-        {
-            string line = await reader.ReadLineAsync();
-            
-            if (!string.IsNullOrWhiteSpace(line))
-            {
-                var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-               
-                if (parts.Length == 2)
-                {
-                    leftArray.Add(parts[0].Trim());
-                    rightArray.Add(parts[1].Trim());
-                }
-                else
-                {
-                    Console.WriteLine("Line does not contain exactly two parts or contains empty values.");
-                }
-            }
-        }
-
-        // Sort the left and right arrays
-        leftArray.Sort();
-        rightArray.Sort();
-
-        return (leftArray, rightArray);
     }
 }
