@@ -24,6 +24,7 @@ async Task SolutionDay(int day)
             break;
         case 2:
             await RedNosedReports01.Solution();
+            await RedNosedReports02.Solution();
             break;
         // Add more cases for each day
         default:

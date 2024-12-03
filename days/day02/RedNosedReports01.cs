@@ -19,7 +19,7 @@ public static class RedNosedReports01
         foreach (var report in reports)
         {
             var status = Day02InputProcessor.IsSafeReport(report) ? "Safe" : "Unsafe";
-            Console.WriteLine($"{string.Join(" ", report)}: {status}");
+            // Console.WriteLine($"{string.Join(" ", report)}: {status}");
         }
         Console.WriteLine($"\nNumber of safe reports: {safeReports.Count}");
     }

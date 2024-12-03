@@ -13,6 +13,7 @@ public static class Day02InputProcessor
         return isIncreasing || isDecreasing;
     }
 
+    
     public static List<List<int>> ParseReports(string rawInput)
     {
         return rawInput.Split('\n')
