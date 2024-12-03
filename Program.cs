@@ -26,6 +26,10 @@ async Task SolutionDay(int day)
             await RedNosedReports01.Solution();
             await RedNosedReports02.Solution();
             break;
+        case 3:
+            await MullItOver01.Solution();
+            // await RedNosedReports02.Solution();
+            break;
         // Add more cases for each day
         default:
             Console.WriteLine($"Solution for Day {day} is not implemented yet.");
