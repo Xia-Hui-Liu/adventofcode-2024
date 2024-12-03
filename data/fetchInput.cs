@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-class FetchInput {
-    private static readonly string SessionCookie = Environment.GetEnvironmentVariable("AOC_SESSION");
+public static class FetchInput
+{
+    private static readonly string _sessionCookie = Environment.GetEnvironmentVariable("AOC_SESSION") ?? string.Empty;
+    public static string SessionCookie => _sessionCookie;
 
-    public static async Task Main(string[] args) 
+    public static async Task<(List<string> LeftArray, List<string> RightArray)> FetchAndProcessInput(int day)
     {
         if (string.IsNullOrEmpty(SessionCookie))
         {
@@ -15,66 +17,59 @@ class FetchInput {
             Environment.Exit(1);
         }
 
-        if (args.Length == 0 || !int.TryParse(args[0], out int day) || day < 1 || day > 25)
-        {
-            Console.Error.WriteLine("Please provide a valid day (1-25) as a command-line argument.");
-            Environment.Exit(1);
-        }
+        string url = $"https://adventofcode.com/2024/day/{day}/input";
+        using HttpClient client = new HttpClient();
 
-        await FetchAndProcessInput(day);
-    }
-
-    private static async Task FetchAndProcessInput(int day)
-    {
-        string url = $"https://adventofcode.com/2023/day/{day}/input";
-        using HttpClient client= new HttpClient();
-
-        // Set up headers
         client.DefaultRequestHeaders.Add("Cookie", $"session={SessionCookie}");
         client.DefaultRequestHeaders.Add("User-Agent", "Advent of Code Input Fetcher - C# Script");
 
-        try 
+        try
         {
             using HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
 
-            // Get the response stream
             using Stream responseStream = await response.Content.ReadAsStreamAsync();
-            using StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-
-            const int ChunkSize = 100; // Lines per chunk
-            var buffer = new List<string>();
-
-            while (!reader.EndOfStream)
-            {
-                string line = reader.ReadLineAsync();
-                if (line != null)
-                {
-                    buffer.Add(line);
-                }
-
-                if (buffer.Count >= ChunkSize)
-                {
-                    ProcessChunk(buffer);
-                    buffer.Clear();
-                }
-            }
-
-            if (buffer.Count > 0)
-            {
-                ProcessChunk(buffer);
-            }
-            Console.WriteLine("Input processing completed.");
-        } 
+            var (leftArray, rightArray) = await ProcessInputStream(responseStream);
+            return (leftArray, rightArray);
+        }
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Error fetching input: {ex.Message}");
+            return (new List<string>(), new List<string>());
         }
     }
 
-    private static void ProcessChunk(List<string> chunk)
+    public static async Task<(List<string> LeftArray, List<string> RightArray)> ProcessInputStream(Stream inputStream)
     {
-        // Process the chunk of data
-        
+        using StreamReader reader = new StreamReader(inputStream);
+
+        var leftArray = new List<string>();
+        var rightArray = new List<string>();
+
+        while (!reader.EndOfStream)
+        {
+            string line = await reader.ReadLineAsync();
+            
+            if (!string.IsNullOrWhiteSpace(line))
+            {
+                var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+               
+                if (parts.Length == 2)
+                {
+                    leftArray.Add(parts[0].Trim());
+                    rightArray.Add(parts[1].Trim());
+                }
+                else
+                {
+                    Console.WriteLine("Line does not contain exactly two parts or contains empty values.");
+                }
+            }
+        }
+
+        // Sort the left and right arrays
+        leftArray.Sort();
+        rightArray.Sort();
+
+        return (leftArray, rightArray);
     }
 }
