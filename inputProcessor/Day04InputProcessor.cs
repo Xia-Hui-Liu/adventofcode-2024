@@ -33,7 +33,6 @@ public static class Day04InputProcessor
 
         return count;
     }
-            
     private static bool IsWordAtPosition(string word, int row, int col, int dx, int dy, List<string> grid)
     {
         int rows = grid.Count;
@@ -53,7 +52,47 @@ public static class Day04InputProcessor
 
         return true;
     }
+    public static int CountXMASPatterns(List<string> grid)
+    {
+        int rows = grid.Count;
+        int cols = grid[0].Length;
+        int count = 0;
 
+        // Loop through each cell as the center of the X
+        for (int row = 1; row < rows - 1; row++)
+        {
+            for (int col = 1; col < cols - 1; col++)
+            {
+                // Check if the center cell is 'A'
+                if (grid[row][col] == 'A')
+                {
+                    // Check diagonals for the X-MAS pattern
+                    if (IsXMASAtPosition(row, col, grid))
+                    {
+                        count++;
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
+    private static bool IsXMASAtPosition(int row, int col, List<string> grid)
+    {
+        // Check top-left and bottom-right diagonals for MAS or SAM
+        bool topLeftBottomRight = MatchesPattern(grid[row - 1][col - 1], grid[row + 1][col + 1]);
+        // Check top-right and bottom-left diagonals for MAS or SAM
+        bool topRightBottomLeft = MatchesPattern(grid[row - 1][col + 1], grid[row + 1][col - 1]);
+
+        return topLeftBottomRight && topRightBottomLeft;
+    }
+
+    private static bool MatchesPattern(char top, char bottom)
+    {
+        // Check for M and S in either order
+        return (top == 'M' && bottom == 'S') || (top == 'S' && bottom == 'M');
+    }
     private static IEnumerable<(int dx, int dy)> GetDirections()
     {
         for (int i = 0; i < Directions.GetLength(0); i++)

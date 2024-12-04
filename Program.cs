@@ -32,7 +32,7 @@ async Task SolutionDay(int day)
             break;
         case 4:
             await CeresSearch01.Solution();
-            // await CeresSearch02.Solution();
+            await CeresSearch02.Solution();
             break;
         // Add more cases for each day
         default:
