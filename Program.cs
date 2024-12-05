@@ -34,6 +34,10 @@ async Task SolutionDay(int day)
             await CeresSearch01.Solution();
             await CeresSearch02.Solution();
             break;
+        case 5:
+            await PrintQueue01.Solution();
+            // await PrintQueue02.Solution();
+            break;
         // Add more cases for each day
         default:
             Console.WriteLine($"Solution for Day {day} is not implemented yet.");
