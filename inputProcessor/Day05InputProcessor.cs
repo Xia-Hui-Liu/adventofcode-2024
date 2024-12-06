@@ -1,23 +1,62 @@
 public static class Day05InputProcessor
 {
-    public static (List<string> UpList, List<string> DownList) ProcessInput(string input)
+   public static int SumMiddlePages(List<string> input)
     {
-        var lines = input.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        var rules = new Dictionary<int, HashSet<int>>();
+        var updates = new List<List<int>>();
+        bool parsingRules = true;
 
-        List<string> UpList = new List<string>();
-        List<string> DownList = new List<string>();
-
-        foreach (var line in lines)
+        // Parse input
+        foreach (var line in input)
         {
-            if (line.Contains("|"))
+            if (string.IsNullOrWhiteSpace(line))
             {
-                UpList.Add(line);
+                parsingRules = false;
+                continue;
             }
-            else if (line.Contains(","))
+
+            if (parsingRules)
             {
-                DownList.Add(line);
+                var parts = line.Split('|');
+                int before = int.Parse(parts[0]);
+                int after = int.Parse(parts[1]);
+                if (!rules.ContainsKey(before)) rules[before] = new HashSet<int>();
+                rules[before].Add(after);
+            }
+            else
+            {
+                updates.Add(line.Split(',').Select(int.Parse).ToList());
             }
         }
-        return (UpList, DownList);
+
+        int middlePageSum = 0;
+
+        foreach (var update in updates)
+        {
+            if (IsCorrectlyOrdered(update, rules))
+            {
+                int middleIndex = update.Count / 2;
+                middlePageSum += update[middleIndex];
+                Console.WriteLine($"Correctly ordered update: {string.Join(",", update)}, Middle page: {update[middleIndex]}");
+            }
+        }
+
+        return middlePageSum;
     }
+
+    private static bool IsCorrectlyOrdered(List<int> update, Dictionary<int, HashSet<int>> rules)
+    {
+        for (int i = 0; i < update.Count; i++)
+        {
+            for (int j = i + 1; j < update.Count; j++)
+            {
+                if (rules.TryGetValue(update[j], out var afterSet) && afterSet.Contains(update[i]))
+                {
+                    return false; 
+                }
+            }
+        }
+        return true;
+    }
+
 }
