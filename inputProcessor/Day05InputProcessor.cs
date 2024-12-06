@@ -1,6 +1,8 @@
+using System.Net;
+
 public static class Day05InputProcessor
 {
-   public static int SumMiddlePages(List<string> input)
+   public static (int Part1, int Part2) SumMiddlePages(List<string> input)
     {
         var rules = new Dictionary<int, HashSet<int>>();
         var updates = new List<List<int>>();
@@ -29,19 +31,26 @@ public static class Day05InputProcessor
             }
         }
 
-        int middlePageSum = 0;
+        int part1Sum = 0;
+        int part2Sum = 0;
 
         foreach (var update in updates)
         {
             if (IsCorrectlyOrdered(update, rules))
             {
                 int middleIndex = update.Count / 2;
-                middlePageSum += update[middleIndex];
+                part1Sum += update[middleIndex];
                 Console.WriteLine($"Correctly ordered update: {string.Join(",", update)}, Middle page: {update[middleIndex]}");
+            }
+            else 
+            {
+                var correctedUpdate = CorrectOrder(update, rules);
+                int middleIndex = correctedUpdate.Count / 2;
+                part2Sum += correctedUpdate[middleIndex];
             }
         }
 
-        return middlePageSum;
+        return (part1Sum, part2Sum);
     }
 
     private static bool IsCorrectlyOrdered(List<int> update, Dictionary<int, HashSet<int>> rules)
@@ -57,6 +66,13 @@ public static class Day05InputProcessor
             }
         }
         return true;
+    }
+
+    private static List<int> CorrectOrder(List<int> update, Dictionary<int, HashSet<int>> rules)
+    {
+        return update.OrderBy(x => x)
+                     .OrderBy(x => update.Count(y => rules.TryGetValue(x, out var set) && set.Contains(y)))
+                     .ToList();
     }
 
 }

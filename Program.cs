@@ -36,7 +36,7 @@ async Task SolutionDay(int day)
             break;
         case 5:
             await PrintQueue01.Solution();
-            // await PrintQueue02.Solution();
+            await PrintQueue02.Solution();
             break;
         // Add more cases for each day
         default:

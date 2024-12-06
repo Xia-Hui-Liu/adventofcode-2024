@@ -1,4 +1,4 @@
-public static class PrintQueue01
+public static class PrintQueue02
 {
    public static async Task Solution()
     {
@@ -13,13 +13,14 @@ public static class PrintQueue01
         try
         {
             List<string> input = rawInput.Split('\n').Select(line => line.Trim()).ToList();
-              var (part1Sum, _) = Day05InputProcessor.SumMiddlePages(input);
-            Console.WriteLine($"Sum of middle page numbers from correctly ordered updates: {part1Sum}");
+            var (_, part2Sum) = Day05InputProcessor.SumMiddlePages(input);
+            Console.WriteLine($"Sum of middle page numbers from corrected updates: {part2Sum}");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+    
     }
 }
 
